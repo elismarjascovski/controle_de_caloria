@@ -1,0 +1,84 @@
+{% extends 'portal/layout.html' %}
+
+{% block portal %}
+
+<div id="calorias_ingeridas" data-calorias="[{{ calorias_ingeridas }}]"></div>
+<div id="pessoa_meta" data-meta="{{ caloria_maxima }}"></div>
+<div id="pessoa_meta" data-meta="{{ pessoa_meta }}"></div>
+
+
+
+<div style="text-align: center;" class="row">
+    {% if pessoa_meta > 0 %} 
+        <h3>Sua meta diária de calorias é: {{ pessoa_meta }}</h3>
+    {% endif %}
+    <div class="col-md-12">
+        <canvas id="cvs" width="750" height="250" style="background-color: #555; border: 5px solid black; border-radius: 7px; box-shadow: 2px 2px 3px gray">[No canvas support]</canvas><br />
+    </div>
+</div>
+<br>
+<table class="table table-striped table-hover text-center">
+    <thead>
+        <tr>
+            <th scope="col">Data</th>
+            <th scope="col">Calorias (kcal)</th>
+            <th scope="col">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if historico|length == 0 %}
+            <tr><th colspan="3">Sem dados de histórico de refeição para exibir</th></tr>
+        {% else %}
+            {% for dados in historico %}
+                <tr>
+                    <td scope="row">{{ dados.dt_refeicao }}</td>
+                    <td scope="row">{{ dados.calorias }}</td>
+                    <td scope="row">
+                        <a href="refeicaovisualizar?dt_refeicao={{ dados.dt_refeicao }}" class="btn btn-outline-primary btn-sm" type="submit">VISUALIZAR</a>
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="excluirRefeicao('{{ dados.dt_refeicao }}', 'refeicaohistorico')" type="submit">EXCLUIR</a>
+                    </td>
+                </tr>            
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+<script>
+    const caloriasIngeridas = document.getElementById('calorias_ingeridas').getAttribute('data-calorias');
+    const pessoaMeta = JSON.parse(document.getElementById('pessoa_meta').getAttribute('data-meta'));
+    console.log(caloriasIngeridas);
+    bar = new RGraph.Bar({
+        id: 'cvs',
+        data: caloriasIngeridas,
+        options: {
+            yaxisScaleMax: pessoaMeta,
+            backgroundGridVlines: false,
+            backgroundGridBorder: false,
+            backgroundGridColor: '#999',
+            xaxisLabels: ['Seg','Ter','Qua','Qui','Sex','Sab','Dom'],
+            marginLeft: 80,
+            marginRight: 55,
+            marginBottom: 45,
+            colors: ['Gradient(#A18AC5:#D1AAF5)'],
+            textColor: '#ccc',
+            xaxisTickmarksCount: 0,
+            xaxis: false,
+            yaxis: false,
+            shadowColor: 'black',
+            shadowOffsetx: 0,
+            shadowOffsety: 0,
+            shadowBlur: 15,
+            colorsStroke: 'rgba(0,0,0,0)',
+            combinedEffect: 'wave',
+            combinedEffectOptions: '{frames: 30}',
+            responsive: [
+                {maxWidth: null,width:600,height:250,options:{textSize:18,marginInner: 20}},
+                {maxWidth: 900, width:400,height:200,options:{textSize:12,marginInner: 7}}
+            ]
+        }
+    });
+
+    RGraph.redraw();
+</script>
+
+{% endblock %}

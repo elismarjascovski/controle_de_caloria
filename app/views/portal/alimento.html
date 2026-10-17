@@ -1,0 +1,105 @@
+{% extends 'portal/layout.html' %}
+
+{% block portal %}
+
+<div style="text-align: center;" class="row">
+    <div class="col-md-12">
+        <strong style="font-size: 30px;">Consultar Alimento</strong>
+    </div>
+</div>
+<div style="text-align: right;" class="row">
+    <div class="col-md-12">
+        <a href="alimentoinserir" class="btn btn-outline-primary btn-sm" type="submit">INSERIR</a>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-md-6">
+        <label for="alimento" class="form-label">Alimento</label>
+        <select name="alimento" class="form-select" id="alimento">
+            <option value="">Selecione o alimento</option>
+            {% for alimento in alimentos %}
+            <option value="{{ alimento.id }}">
+                {{ alimento.ds_alimento }}
+            </option>
+            {% endfor %}
+        </select>
+        <div id="alimentoFeedback" class="invalid-feedback">
+            <span id="alimentoFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="consumo" class="form-label">Consumo (gramas)</label>
+        <input type="number" class="form-control" id="consumo" name="consumo" min="0" step="1">
+        <div id="consumoFeedback" class="invalid-feedback">
+            <span id="consumoFeedbackDescricao"></span>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row text-center">
+    <div class="col-md-12">
+        <a href="#" class="btn btn-outline-primary btn-sm" onclick="verDadosAlimento()" type="submit">Ver Dados</a>
+    </div>
+</div>
+<br>
+<table class="table table-striped table-hover text-center">
+    <thead>
+        <tr>
+            <th scope="col">Alimento</th>
+            <th scope="col">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if alimentos_cadastrados|length == 0 %}
+            <tr><th colspan="2">Sem dados de alimentos cadastrados para exibir</th></tr>
+        {% else %}
+            {% for dados in alimentos_cadastrados %}
+                <tr>
+                    <td scope="row">{{ dados.ds_alimento }}</td>
+                    <td scope="row">
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="excluirDadosAlimento({{ dados.id }}, 'alimento')" type="submit">EXCLUIR</a>
+                    </td>
+                </tr>            
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+<div id="modalDadosAlimento" class="modal" tabindex="-1">
+    <div class="modal-dialog text-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p><img src="/assets/images/cabecalho.png" width="120"></p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="modal-title"><span id="nome_modal"></span> - <span id="tipo_modal"></span></h5>
+                <hr>
+                <p><strong>Calorias: </strong><span id="calorias_modal"></span> kcal</p>
+                <p><strong>Proteínas: </strong><span id="proteinas_modal"></span> gramas</p>
+                <p><strong>Carboidratos: </strong><span id="carboidratos_modal"></span> gramas</p>
+                <p><strong>Fibras: </strong><span id="fibras_modal"></span> gramas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('consumo').addEventListener('input', function (e) {
+        // Remove todos os caracteres '.' e ',' do valor do campo
+        this.value = this.value.replace(/[.,]/g, '');
+    });
+</script>
+
+<style>
+    /* Alterando o fundo deste modal específico */
+    #modalDadosAlimento .modal-content {
+        background-color: #f0f8ff; /* Cor de fundo */
+    border: 2px solid black; /* Cor da borda azul escuro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+{% endblock %}
+

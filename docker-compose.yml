@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Servidor PHP-FPM
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: controle_caloria_app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www
+    networks:
+      - controle_caloria_net
+
+  # Servidor Web Nginx
+  webserver:
+    image: nginx:alpine
+    container_name: controle_caloria_webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - controle_caloria_net
+
+  # Banco de Dados MySQL
+  db:
+    image: mysql:8.0
+    container_name: controle_caloria_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: controle_caloria
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Importação automática do script SQL no primeiro boot
+      - ./tabelas.sql:/docker-entrypoint-initdb.d/tabelas.sql
+    networks:
+      - controle_caloria_net
+
+networks:
+  controle_caloria_net:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

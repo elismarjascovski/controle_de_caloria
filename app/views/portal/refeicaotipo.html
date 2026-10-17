@@ -1,0 +1,126 @@
+{% extends 'portal/layout.html' %}
+
+{% block portal %}
+
+<div style="text-align: right;" class="row">
+    <div class="col-md-12">
+        <a href="#" class="btn btn-outline-primary btn-sm" onclick="inserirTipoRefeicao()" type="submit">INSERIR</a>
+    </div>
+</div>
+<br>
+<table class="table table-striped table-hover text-center">
+    <thead>
+        <tr>
+            <th scope="col">Tipo Refeição</th>
+            <th scope="col">Cor</th>
+            <th scope="col">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if tipo_refeicao|length == 0 %}
+            <tr><th colspan="3">Sem dados de tipo de refeição para exibir</th></tr>
+        {% else %}
+            {% for tipo in tipo_refeicao %}
+                <tr>
+                    <td scope="row">{{ tipo.tp_refeicao }}</td>
+                    <td scope="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div style="width: 30px; border-radius: 10px; height: 30px; background-color: {{ tipo.cor }};"></div>
+                    </td>
+                    <td scope="row">
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="alterarTipoRefeicao({{ tipo.id }})" type="submit">ALTERAR</a>
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="excluirTipoRefeicao({{ tipo.id }}, '{{ tipo.tp_refeicao }}')" type="submit">EXCLUIR</a>
+                    </td>
+                </tr>            
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+<div id="modalInserirTipoRefeicao" class="modal" tabindex="-1">
+    <div class="modal-dialog text-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="/assets/images/cabecalho.png" width="120">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                
+            </div>
+            <div class="modal-body">
+                <h5 class="modal-title"><span id="nome_modal">Inserir Tipo de Refeição</h5>
+                    <hr>
+                <div class="row p-1">
+                    <div class="col-md-12">
+                        <label for="tp_refeicao" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="tp_refeicao" name="tp_refeicao">
+                        <div id="tp_refeicaoFeedback" class="invalid-feedback">
+                            <span id="tp_refeicaoFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="cor" class="form-label">Cor</label>
+                        <input type="color" class="form-control" id="cor" name="cor">
+                        <div id="corFeedback" class="invalid-feedback">
+                            <span id="corFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="inserirDadosTipoRefeicao()" type="submit">INSERIR</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalAlterarTipoRefeicao" class="modal" tabindex="-1">
+    <div class="modal-dialog text-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="/assets/images/cabecalho.png" width="120">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="fecharAlterarTipoRefeicao()"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="modal-title"><span id="nome_modal">Inserir Tipo de Refeição</h5>
+                    <hr>
+                    <input type="number" class="form-control" id="id_refeicaotipo" name="id_refeicaotipo" hidden>
+                <div class="row p-1">
+                    <div class="col-md-12">
+                        <label for="tp_refeicao_alterar" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="tp_refeicao_alterar" name="tp_refeicao_alterar">
+                        <div id="tp_refeicao_alterarFeedback" class="invalid-feedback">
+                            <span id="tp_refeicao_alterarFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="cor_alterar" class="form-label">Cor</label>
+                        <input type="color" class="form-control" id="cor_alterar" name="cor_alterar">
+                        <div id="cor_alterarFeedback" class="invalid-feedback">
+                            <span id="cor_alterarFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="alterarDadosTipoRefeicao()" type="submit">ALTERAR</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function fecharAlterarTipoRefeicao() {
+        window.location.href = "refeicaotipo";
+    } 
+</script>
+
+<style>
+    th, td {
+        border: 1px solid rgb(196, 196, 196);
+    }
+</style>
+{% endblock %}

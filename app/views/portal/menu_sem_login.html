@@ -1,0 +1,63 @@
+<div id="menu_sem_login" class="dropdown custom-dropdown">
+    <button style="background-color: #fdb7b1;" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+      MENU
+    </button>
+    <ul style="background-color: #f8d8d5;" class="dropdown-menu p-3">
+        <li class="d-flex justify-content-center">
+            <!-- Configuração do Google Sign-In -->
+            <div id="g_id_onload"
+                data-client_id="{{ CLIENT_ID_GOOGLE }}"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-login_uri="http://localhost/home/logargoogle"
+                data-auto_prompt="false">
+            </div>
+            <!-- Botão com tamanho e largura válidos -->
+            <div class="g_id_signin"
+                data-type="standard"
+                data-shape="pill"
+                data-theme="filled_black"
+                data-text="signin_with"
+                data-size="medium"
+                data-logo_alignment="left"
+                data-width="240">
+            </div>
+        </li>
+        
+        <hr class="dropdown-divider">
+
+        <li>
+            <form id="loginForm" novalidate class="row g-3" method="POST" action="/home/logar">
+                <div class="container">
+                    <div class="col g-3 align-items-center">
+                        <div class="mb-3">
+                            <label class="form-label" for="email">E-mail</label>
+                            <input class="form-control" type="email" id="email" name="email" value="" required>
+                            <div id="emailFeedback" class="invalid-feedback">
+                                <span id="emailFeedbackDescricao"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="senha">Senha</label>
+                            <input class="form-control" type="password" id="senha" name="senha" value="" required>
+                            <div id="senhaFeedback" class="invalid-feedback">
+                                <span id="senhaFeedbackDescricao"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="col" style="text-align: center;">
+                                {{ dados.errologin }}
+                            </div>
+                        </div>
+                        <div style="text-align: center;" class="row-auto">
+                            <div class="col">
+                                <a class="btn btn-outline-primary btn-block btn-sm" onclick="logarUsuario()">Login</a>
+                                <a href="cadastrar" class="btn btn-outline-primary btn-block btn-sm">Cadastrar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </li>
+    </ul>
+</div>

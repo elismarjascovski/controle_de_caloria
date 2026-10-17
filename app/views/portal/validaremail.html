@@ -1,0 +1,20 @@
+{% extends 'portal/layout.html' %}
+
+{% block portal %}
+
+<input type="text" class="form-control" id="mensagem" name="mensagem" value="{{ mensagem }}" hidden>
+
+<script type="text/javascript">
+    window.onload = function () {
+        Swal.fire({
+            text: $('#mensagem').val(),
+            icon: 'info',
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'OK!',
+            }).then((result) => {
+               window.location.href = '/';
+            });
+    }
+</script>
+
+{% endblock %}

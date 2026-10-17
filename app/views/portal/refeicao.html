@@ -1,0 +1,313 @@
+{% extends 'portal/layout.html' %}
+
+{% block portal %}
+
+<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+<div style="text-align: right;" class="row">
+    <div class="col-md-12">
+        <a href="#" class="btn btn-outline-primary btn-sm" onclick="inserirRefeicao()" type="submit">INSERIR</a>
+    </div>
+</div>
+<br>
+{% if refeicoesatuais|length != 0 %}
+
+<div id="grafico_legenda" data-array="[{{ grafico_legenda }}]"></div>
+<div id="grafico_valores_calorias" data-array="[{{ grafico_valores_calorias }}]"></div>
+<div id="grafico_valores_proteinas" data-array="[{{ grafico_valores_proteinas }}]"></div>
+<div id="grafico_valores_fibras" data-array="[{{ grafico_valores_fibras }}]"></div>
+<div id="grafico_valores_carboidratos" data-array="[{{ grafico_valores_carboidratos }}]"></div>
+<div id="cor_refeicao" data-array="[{{ cor_refeicao }}]"></div>
+<div id="total_calorias" data-calorias="{{ total_calorias }}"></div>
+<div id="total_proteinas" data-proteinas="{{ total_proteinas }}"></div>
+<div id="total_fibras" data-fibras="{{ total_fibras }}"></div>
+<div id="total_carboidratos" data-carboidratos="{{ total_carboidratos }}"></div>
+
+
+<div id="carouselExample" class="carousel slide">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div id="calorias_consumidas" class="container text-center">
+            <canvas id="cvs_calorias" width="900" height="250">Gráfico de calorias</canvas>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div id="proteinas_consumidas" class="container text-center">
+            <canvas id="cvs_proteinas" width="900" height="250">Gráfico de proteínas</canvas>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div id="fibras_consumidas" class="container text-center">
+            <canvas id="cvs_fibras" width="900" height="250">Gráfico de fibras</canvas>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div id="Carboidratos" class="container text-center">
+            <canvas id="cvs_carboidratos" width="900" height="250">Gráfico de carboidratos</canvas>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1) brightness(6.5);"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1) brightness(6.5);"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+</div>
+{% endif %}
+
+    <table class="table table-striped table-hover text-center">
+        <thead>
+            <tr>
+                <th scope="col">Tipo Refeição</th>
+                <th scope="col">Alimento</th>
+                <th scope="col">Quantidade (gr)</th>
+                <th scope="col">Calorias (kcal)</th>
+                <th scope="col">Proteínas (gr)</th>
+                <th scope="col">Fibras (gr)</th>
+                <th scope="col">Carboidratos (gr)</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if refeicoesatuais|length == 0 %}
+                <tr><th colspan="8">Sem dados de refeição para exibir</th></tr>
+            {% else %}
+                {% for refeicao in refeicoesatuais %}
+                    <tr>
+                        <td scope="row">{{ refeicao.tp_refeicao }}</td>
+                        <td scope="row">{{ refeicao.ds_alimento }}</td>
+                        <td scope="row">{{ refeicao.nu_consumo }}</td>
+                        <td scope="row">{{ refeicao.nu_energia }}</td>
+                        <td scope="row">{{ refeicao.nu_proteina }}</td>
+                        <td scope="row">{{ refeicao.nu_fibra }}</td>
+                        <td scope="row">{{ refeicao.nu_carboidrato }}</td>
+                        <td scope="row">
+                            <a href="#" class="btn btn-outline-primary btn-sm" onclick="alterarDadosRefeicao({{ refeicao.id }}, 'refeicao')" type="submit">ALTERAR</a>
+                            <a href="#" class="btn btn-outline-primary btn-sm" onclick="excluirDadosRefeicao({{ refeicao.id }}, 'refeicao')" type="submit">EXCLUIR</a>
+                        </td>
+                    </tr>            
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+<div id="modalInserirRefeicao" class="modal" tabindex="-1">
+    <div class="modal-dialog text-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="/assets/images/cabecalho.png" width="120">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                
+            </div>
+            <div class="modal-body">
+                <h5 class="modal-title"><span id="nome_modal">Inserir Refeição</h5>
+                    <hr>
+
+                <div class="row p-1">
+                    <div class="col-md-12">
+                        <label for="dt_refeicao" class="form-label">Data Refeição</label>
+                        <input type="date" class="form-control" id="dt_refeicao" name="dt_refeicao" value="{{ data_atual }}"  max="">
+                        <div id="dt_refeicaoFeedback" class="invalid-feedback">
+                            <span id="dt_refeicaoFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="id_refeicao_tipo" class="form-label">Tipo Refeição</label>
+                        <select name="id_refeicao_tipo" class="form-select" id="id_refeicao_tipo">
+                            <option value="">Selecione o tipo</option>
+                            {% for tipo in tipo_refeicao %}
+                            <option value="{{ tipo.id }}">
+                                {{ tipo.tp_refeicao }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div id="id_refeicao_tipoFeedback" class="invalid-feedback">
+                            <span id="id_refeicao_tipoFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="alimento" class="form-label">Alimento</label>
+                        <select name="alimento" class="form-select" id="alimento">
+                            <option value="">Selecione o alimento</option>
+                            {% for alimento in alimentos %}
+                            <option value="{{ alimento.id }}">
+                                {{ alimento.ds_alimento }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div id="alimentoFeedback" class="invalid-feedback">
+                            <span id="alimentoFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="consumo" class="form-label">Consumo (gramas)</label>
+                        <input type="number" class="form-control" id="consumo" name="consumo" min="0" step="1">
+                        <div id="consumoFeedback" class="invalid-feedback">
+                            <span id="consumoFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="inserirDadosRefeicao()" type="submit">INSERIR</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalAlterarRefeicao" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen text-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="/assets/images/cabecalho.png" width="120">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                
+            </div>
+            <div class="modal-body">
+                <h5 class="modal-title"><span id="nome_modal">Alterar Refeição</h5>
+                    <hr>
+                <input type="number" class="form-control" id="id_refeicao_alterar" name="id_refeicao_alterar" hidden>
+                <div class="row p-1">
+                    <div class="col-md-12">
+                        <label for="dt_refeicao_alterar" class="form-label">Data Refeição</label>
+                        <input type="date" class="form-control" id="dt_refeicao_alterar" name="dt_refeicao_alterar"  max="">
+                        <div id="dt_refeicao_alterarFeedback" class="invalid-feedback">
+                            <span id="dt_refeicao_alterarFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="id_refeicao_tipo_alterar" class="form-label">Tipo Refeição</label>
+                        <select name="id_refeicao_tipo_alterar" class="form-select" id="id_refeicao_tipo_alterar">
+                            <option value="">Selecione o tipo</option>
+                            {% for tipo in tipo_refeicao %}
+                            <option value="{{ tipo.id }}">
+                                {{ tipo.tp_refeicao }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div id="id_refeicao_tipo_alterarFeedback" class="invalid-feedback">
+                            <span id="id_refeicao_tipo_alterarFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="alimento_alterar" class="form-label">Alimento</label>
+                        <select name="alimento_alterar" class="form-select" id="alimento_alterar">
+                            <option value="">Selecione o alimento</option>
+                            {% for alimento in alimentos %}
+                            <option value="{{ alimento.id }}">
+                                {{ alimento.ds_alimento }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div id="alimento_alterarFeedback" class="invalid-feedback">
+                            <span id="alimento_alterarFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="consumo_alterar" class="form-label">Consumo (gramas)</label>
+                        <input type="number" class="form-control" id="consumo_alterar" name="consumo_alterar" min="0" step="1">
+                        <div id="consumo_alterarFeedback" class="invalid-feedback">
+                            <span id="consumo_alterarFeedbackDescricao"></span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="alterarRefeicao('refeicao')" type="submit">Alterar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('consumo').addEventListener('input', function (e) {
+        this.value = this.value.replace(/[.,]/g, '');
+    });
+    const hoje = new Date().toISOString().split("T")[0];
+    document.getElementById('dt_refeicao').setAttribute('max', hoje);
+
+    const graficoValoresCalorias = JSON.parse(document.getElementById('grafico_valores_calorias').getAttribute('data-array'));
+    const graficoValoresProteinas = JSON.parse(document.getElementById('grafico_valores_proteinas').getAttribute('data-array'));
+    const graficoValoresFibras = JSON.parse(document.getElementById('grafico_valores_fibras').getAttribute('data-array'));
+    const graficoValoresCarboidratos = JSON.parse(document.getElementById('grafico_valores_carboidratos').getAttribute('data-array'));
+
+    const graficoLegendas = JSON.parse(document.getElementById('grafico_legenda').getAttribute('data-array'));
+    const corRefeicao = JSON.parse(document.getElementById('cor_refeicao').getAttribute('data-array'));
+    const totalCalorais = JSON.parse(document.getElementById('total_calorias').getAttribute('data-calorias'));
+    const totalProteinas = JSON.parse(document.getElementById('total_proteinas').getAttribute('data-proteinas'));
+    const totalFibras = JSON.parse(document.getElementById('total_fibras').getAttribute('data-fibras'));
+    const totalCarboidratos = JSON.parse(document.getElementById('total_carboidratos').getAttribute('data-carboidratos'));
+
+    function gerarGrafico(data, graficoLegendas, dsId, corRefeicao, dsTitulo, tooltips = []) {
+        labels       = graficoLegendas;
+        labels_small = RGraph.arrayClone(labels);
+        labels_large = RGraph.arrayClone(labels);
+
+        labels.forEach(function (v, k, arr)
+        {
+            tooltips[k] = '<b style="background-color: black;">{1}</b><br /><i  style="background-color: black;">{2}</i>'.format(
+                labels[k],
+                data[k]
+            );
+            
+            labels_large[k] = labels[k] + ' - ' + data[k];
+        });
+
+        new RGraph.Pie({
+            id: dsId,
+            data: data,
+            options: {
+                marginTop: 50,
+                
+                tooltips: tooltips,
+                
+                tooltipsCss: {
+                    fontSize: '16pt',
+                    textAlign:'left',
+                    pointerEvents: 'none'
+                },
+
+                labels: labels_large,
+                labelsBold: true,
+                labelsColors: ['black'],
+                textFont: 'Lucida Grande, "Lucida Sans Unicode", Arial',
+                textSize: 10,
+                textColor: 'black',
+                shadow: false,
+                colors: corRefeicao,
+                colorsStroke: 'rgba(0,0,0,0)',
+                tooltipsEvent: 'mousemove',
+                highlightStyle: 'outline',
+                title: dsTitulo,
+                titleSize: 18,
+                responsive: [
+                    {maxWidth: null, width: 900, height: 250, options: {labelsList: true, labels: labels_large,textSize:10},parentCss:{'float':'right',textAlign:'none'}},
+                    {maxWidth: 900, width: 350, height: 250, options: {labelsList: false, labels: labels_small,textSize:8},parentCss:{'float':'none',textAlign:'center'}}
+                ]
+            }
+        }).draw();
+    }
+
+    gerarGrafico(graficoValoresCalorias, graficoLegendas, 'cvs_calorias', corRefeicao, ('Calorias Consumidas ' + totalCalorais + ' (kcal)'));
+    gerarGrafico(graficoValoresProteinas, graficoLegendas, 'cvs_proteinas', corRefeicao, ('Proteínas Consumidas ' + totalProteinas + ' (gramas)'));
+    gerarGrafico(graficoValoresFibras, graficoLegendas, 'cvs_fibras', corRefeicao, ('Fibras Consumidas ' + totalFibras + ' (gramas)'));
+    gerarGrafico(graficoValoresCarboidratos, graficoLegendas, 'cvs_carboidratos', corRefeicao, ('Carboidratos Consumidos ' + totalCarboidratos + ' (gramas)'));
+
+</script>
+
+<style>
+    th, td {
+        border: 1px solid rgb(196, 196, 196);
+    }
+</style>
+{% endblock %}

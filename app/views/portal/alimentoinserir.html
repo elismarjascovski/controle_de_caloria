@@ -1,0 +1,73 @@
+{% extends 'portal/layout.html' %}
+
+{% block portal %}
+
+<form id="alimentoInserirForm" class="row g-3" method="POST" action="/alimentoinserir/inserir">
+    <div class="col-md-12">
+        <label for="tp_alimento" class="form-label">Tipo Alimento</label>
+        <select name="tp_alimento" class="form-select" id="tp_alimento">
+            <option value="">Selecione o tipo</option>
+            {% for tipo_alimento in listaTipoAlimento %}
+            <option value="{{ tipo_alimento.id }}">
+                {{ tipo_alimento.tp_alimento }}
+            </option>
+            {% endfor %}
+        </select>
+        <div id="tp_alimentoFeedback" class="invalid-feedback">
+            <span id="tp_alimentoFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="ds_alimento" class="form-label">Nome Alimento</label>
+        <input type="text" class="form-control" id="ds_alimento" name="ds_alimento">
+        <div id="ds_alimentoFeedback" class="invalid-feedback">
+            <span id="ds_alimentoFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="quantidade" class="form-label">Porção / Quantidade (gramas)</label>
+        <input type="number" class="form-control" id="quantidade" name="quantidade" min="0" step="1">
+        <div id="quantidadeFeedback" class="invalid-feedback">
+            <span id="quantidadeFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="nu_energia" class="form-label">Calorias (kcal)</label>
+        <input type="number" class="form-control" id="nu_energia" name="nu_energia" min="0" step="1">
+        <div id="nu_energiaFeedback" class="invalid-feedback">
+            <span id="nu_energiaFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="nu_proteina" class="form-label">Proteína</label>
+        <input type="number" class="form-control" id="nu_proteina" name="nu_proteina" min="0" step="1">
+        <div id="nu_proteinaFeedback" class="invalid-feedback">
+            <span id="nu_proteinaFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="nu_carboidrato" class="form-label">Carboidrato</label>
+        <input type="number" class="form-control" id="nu_carboidrato" name="nu_carboidrato" min="0" step="1">
+        <div id="nu_carboidratoFeedback" class="invalid-feedback">
+            <span id="nu_carboidratoFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="nu_fibra" class="form-label">Fibra</label>
+        <input type="number" class="form-control" id="nu_fibra" name="nu_fibra" min="0" step="1">
+        <div id="nu_fibraFeedback" class="invalid-feedback">
+            <span id="nu_fibraFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-12">
+        <a href="#" class="btn btn-outline-primary btn-sm" onclick="inserirAlimento()" type="submit">INSERIR</a>
+    </div>
+</form>
+
+<script>
+    document.getElementById('quantidade').addEventListener('input', function (e) {
+        this.value = this.value.replace(/[.,]/g, '');
+    });
+</script>
+
+{% endblock %}

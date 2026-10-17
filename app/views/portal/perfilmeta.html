@@ -1,0 +1,65 @@
+{% extends 'portal/layout.html' %}
+
+{% block portal %}
+
+{% if dados_faltantes == 'true' %}
+    <h3 style="text-align: center;"><strong>Preencha todos os dados do seu Perfil antes de adicionar suas Metas. <a href="/perfil">Clique Aqui</a></strong></h3>
+{% else %}
+    <input type="number" id="nu_caloriasdiarias_limpa" name="nu_caloriasdiarias_limpa" value="{{ calorias_diarias_limpa }}" hidden>
+
+    <form id="atualizarDadosMetaForm" class="row g-3" method="POST" action="/perfilmeta/update/{{ dados.user.id }}">
+        <div class="col-md-12">
+            <label for="nivel_atividade" class="form-label">Nível de Atividade</label>
+            <select name="nivel_atividade" class="form-select" id="nivel_atividade">
+                <option value="1">Sedentário (nenhum ou pouquíssimo exercício)</option>
+                <option value="2">Levemente Ativo (prática de exercícios 1 a 3 vezes/semana)</option>
+                <option value="3">Moderadamente Ativo (exercícios durante 3 a 5 vezes/semana)</option>
+                <option value="4">Muito Ativo (exercícios feitos em 5 ou 6 vezes/semana)</option>
+                <option value="5">Extremamente Ativo (prática de exercícios diários intensos)</option>
+            </select>
+            <div id="nivel_atividadeFeedback" class="invalid-feedback">
+                <span id="nivel_atividadeFeedbackDescricao"></span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label for="nu_caloriasdiarias" class="form-label">Calorias Diárias</label>
+            <input type="number" class="form-control" id="nu_caloriasdiarias" name="nu_caloriasdiarias" value="{{ calorias_diarias }}">
+            <div id="nu_caloriasdiariasFeedback" class="invalid-feedback">
+                <span id="nu_caloriasdiariasFeedbackDescricao"></span>
+            </div>
+        </div>
+        <div class="col-12">
+            <a href="#" class="btn btn-outline-primary btn-sm" onclick="atualizarDadosMeta();" type="button">ATUALIZAR</a>
+        </div>
+    </form>
+    <br>
+    <div class="container" style="text-align: center;">
+        {% if historico|length == 0 %}
+            <spam><strong>Sem dados de metas de calorias diárias</strong></spam>
+        {% else %}
+            <h3><strong>Sua meta de calorias diárias atual é {{ historico.nu_caloriasdiarias }}</strong></h3>
+        {% endif %}
+    </div>
+
+    <script type="text/javascript">
+        $("#nivel_atividade").on("change", function() {
+            let calculoCalorias = 0;
+            const caloriasDiarias = parseFloat($("#nu_caloriasdiarias_limpa").val());
+            
+            if ($("#nivel_atividade").val() == 1) {
+                calculoCalorias = caloriasDiarias * 1.2;
+            } else if ($("#nivel_atividade").val() == 2) {
+                calculoCalorias = caloriasDiarias * 1.375;
+            } else if ($("#nivel_atividade").val() == 3) {
+                calculoCalorias = caloriasDiarias * 1.55;
+            } else if ($("#nivel_atividade").val() == 4) {
+                calculoCalorias = caloriasDiarias * 1.725;
+            } else if ($("#nivel_atividade").val() == 5) {
+                calculoCalorias = caloriasDiarias * 1.9;
+            }
+
+            $("#nu_caloriasdiarias").val(Math.round(calculoCalorias));
+        });
+    </script>
+{% endif %}
+{% endblock %}

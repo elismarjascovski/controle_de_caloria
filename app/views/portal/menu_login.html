@@ -1,0 +1,118 @@
+<div id="menu_login" class="dropdown custom-dropdown">
+    <button style="background-color: #fdb7b1;" class="btn btn-secondary btn-block dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+        MENU
+    </button>
+    <ul style="background-color: #f8d8d5;" class="dropdown-menu" id="main_menu">
+        <li style="padding: 5px;"><strong>{{ dados.nomeUsuario }}</strong></li>
+        <hr>
+        <li><a class="dropdown-item" href="alimento">Alimento</a></li>
+        <li><a class="dropdown-item" href="/">Home</a></li>
+        <li class="dropdown-submenu">
+            <a id="perfil" class="dropdown-item">Perfil</a>
+            <!-- Submenu oculto inicialmente -->
+            <ul id="submenu_perfil" style="background-color: #f8d8d5;" class="dropdown-menu" hidden>
+                <li><a class="dropdown-item" href="perfil">Perfil</a></li>
+                <li><a class="dropdown-item" href="perfilmeta">Metas</a></li>
+            </ul>
+        </li>
+        <li class="dropdown-submenu">
+            <a id="refeicao" class="dropdown-item">Refeição</a>
+            <!-- Submenu oculto inicialmente -->
+            <ul id="submenu_refeicao" style="background-color: #f8d8d5;" class="dropdown-menu" hidden>
+                <li><a class="dropdown-item" href="refeicao">Refeição</a></li>
+                <li><a class="dropdown-item" href="refeicaotipo">Tipo</a></li>
+                <li><a class="dropdown-item" href="refeicaohistorico">Histórico</a></li>
+            </ul>
+        </li>
+        <hr>
+        <li>
+            <div style="text-align: center;" class="row-auto">
+                <div class="col">
+                    <a href="/home/logout" class="btn btn-outline-danger btn-block btn-sm">Sair</a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<script>
+    const refeicaoLink = document.getElementById('refeicao');
+    const submenuRefeicao = document.getElementById('submenu_refeicao');
+    const refeicaoLi = refeicaoLink.closest('li');
+
+    refeicaoLink.addEventListener('mouseover', function() {
+        ajustarLarguraSubmenu(refeicaoLi, submenuRefeicao);
+        submenuRefeicao.hidden = false;
+    });
+
+    refeicaoLink.addEventListener('mouseleave', function() {
+        submenuRefeicao.hidden = true;
+    });
+
+    submenuRefeicao.addEventListener('mouseleave', function() {
+        submenuRefeicao.hidden = true;
+    });
+
+    submenuRefeicao.addEventListener('mouseover', function() {
+        submenuRefeicao.hidden = false;
+    });
+
+    const perfilLink = document.getElementById('perfil');
+    const submenuPerfil = document.getElementById('submenu_perfil');
+    const perfilLi = perfilLink.closest('li');
+
+    perfilLink.addEventListener('mouseover', function() {
+        ajustarLarguraSubmenu(perfilLi, submenuPerfil);
+        submenuPerfil.hidden = false;
+    });
+
+    perfilLi.addEventListener('mouseleave', function() {
+        submenuPerfil.hidden = true;
+    });
+
+    submenuPerfil.addEventListener('mouseleave', function() {
+        submenuPerfil.hidden = true;
+    });
+
+    submenuPerfil.addEventListener('mouseover', function() {
+        submenuPerfil.hidden = false;
+    });
+
+    
+    function ajustarLarguraSubmenu(itemLi, submenu) {
+        const refeicaoWidth = itemLi.clientWidth;
+        submenu.style.width = `${refeicaoWidth}px`;
+    }
+
+</script>
+
+<style>
+    #submenu_refeicao {
+        position: absolute;
+        left: 100%;
+        top: 0;
+        display: block;
+        z-index: 1000;
+    }
+
+    #submenu_perfil {
+        position: absolute;
+        left: 100%;
+        top: 0;
+        display: block;
+        z-index: 1000;
+    }
+
+    #menu_login {
+        position: relative;
+    }
+
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+        top: 0;
+        left: 100%;
+    }
+</style>

@@ -1,0 +1,21 @@
+{% extends 'portal/layout.html' %}
+
+{% block portal %}
+
+<input type="text" class="form-control" id="erro" name="erro" value="{{ dados.erro }}" hidden>
+<input type="text" class="form-control" id="location" name="location" value="{{ location }}" hidden>
+
+<script type="text/javascript">
+    window.onload = function () {
+        Swal.fire({
+            text: $('#erro').val(),
+            icon: 'warning',
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'OK!',
+            }).then((result) => {
+               window.location.href = $('#location').val();
+            });
+    }
+</script>
+
+{% endblock %}

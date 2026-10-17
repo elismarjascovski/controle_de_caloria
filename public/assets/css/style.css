@@ -1,0 +1,17 @@
+:root {
+  --my-background: #f8d8d5;
+  --my-background-titulo: #fdb7b1;
+  --my-color: black;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  background-color: #f8d8d5;
+}
+
+.custom-dropdown {
+position: absolute;
+left: 0;
+top: 10px;
+}

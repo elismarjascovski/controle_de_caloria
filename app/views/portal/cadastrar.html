@@ -1,0 +1,57 @@
+{% extends 'portal/layout.html' %}
+
+{% block portal %}
+
+<div id="g_id_onload"
+    data-client_id="{{ CLIENT_ID_GOOGLE }}"
+    data-context="signin"
+    data-ux_mode="popup"
+    data-login_uri="http://localhost/cadastrar/creategoogle"
+    data-auto_prompt="false">
+</div>
+<div class="g_id_signin"
+    data-type="standard"
+    data-shape="pill"
+    data-theme="filled_black"
+    data-text="signup_with"
+    data-size="medium"
+    data-logo_alignment="left"
+    data-width="40">
+</div>
+    {{ dados.errologin }}
+<br>
+<form id="cadastrarDadosForm" class="row g-3" method="POST" action="/cadastrar/create">
+    <div class="col-md-6">
+        <label for="nome" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="nome" name="nome">
+        <div id="nomeFeedback" class="invalid-feedback">
+            <span id="nomeFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="nascimento" class="form-label">Data de Nascimento</label>
+        <input type="date" class="form-control" id="nascimento" name="nascimento">
+        <div id="nascimentoFeedback" class="invalid-feedback">
+            <span id="nascimentoFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-">
+        <label for="email" class="form-label">E-mail</label>
+        <input type="email" class="form-control" id="email" name="email">
+        <div id="emailFeedback" class="invalid-feedback">
+            <span id="emailFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <label class="form-label" for="senha">Senha</label>
+        <input class="form-control" type="password" id="senha" name="senha">
+        <div id="senhaFeedback" class="invalid-feedback">
+            <span id="senhaFeedbackDescricao"></span>
+        </div>
+    </div>
+    <div class="col-12">
+        <a href="#" class="btn btn-outline-primary btn-sm" onclick="cadastrarDados()" type="submit">Cadastrar</a>
+    </div>
+</form>
+
+{% endblock %}
