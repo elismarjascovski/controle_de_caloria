@@ -84,10 +84,10 @@ cd controle_de_caloria
 Crie/ajuste os arquivos de configuração na raiz do projeto com suas credenciais.
 
 config.php (O host do banco no Docker deve ser db):
-
+```html
 <?php
 define('SITE_URL', 'http://localhost');
-```html
+
 return [
     'database' => [
         'driver'   => 'mysql',
