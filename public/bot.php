@@ -266,16 +266,22 @@ if (isset($update["message"])) {
     } else if ($requisicao['requisicao'] == 'inserir_refeicao_tipo') {
         $dadosTipoRefeicao = listadeTipoRefeicao($chatId);
         $arTipoRefeicao = [];
-        foreach($dadosTipoRefeicao as $tipoRefeicao) {
-            $arTipoRefeicao[] = [["text" => $tipoRefeicao['tp_refeicao'], "callback_data" => 'tipo_refeicao_' . $tipoRefeicao['id']]];
+
+        if (is_array($dadosTipoRefeicao)) {
+            foreach ($dadosTipoRefeicao as $tipoRefeicao) {
+                $arTipoRefeicao[] = [["text" => $tipoRefeicao['tp_refeicao'], "callback_data" => 'tipo_refeicao_' . $tipoRefeicao['id']]];
+            }
         }
-        if(empty($arTipoRefeicao)) {
+
+        if (empty($arTipoRefeicao)) {
             limparRequisicao($chatId);
-            sendMessage($chatId, "Nenhum tipo de refeição encontrado SITE_URL ., /refeicaotipo e adicione os seus tipos.");
+            $msg = "⚠️ *Nenhum tipo de refeição cadastrado!*\n\n"
+                . "Acesse o site para cadastrar seus tipos de refeição:\n" . SITE_URL . "/refeicaotipo";
+            sendMessage($chatId, $msg);
         } else {
             sendOptions($chatId, "Escolha o tipo de refeição: ", $arTipoRefeicao);
         }
-    } elseif ($requisicao['requisicao'] == 'inserir_alimento_selecionado') {
+    } else if ($requisicao['requisicao'] == 'inserir_alimento_selecionado') {
         $boPonto = str_contains($text, '.');
         $boVirgula = str_contains($text, ',');
         if(is_numeric($text) && !($boPonto || $boVirgula)) {
@@ -316,16 +322,24 @@ if (isset($update["message"])) {
         }
     } else if (strpos($callbackData, "alimento_selecionado_") === 0) { 
         $idAlimento = str_replace("alimento_selecionado_", "", $callbackData);
-        inserirAlimentoSelecionado($chatId, 'inserir_refeicao_tipo', $idAlimento);
+        
         $dadosTipoRefeicao = listadeTipoRefeicao($chatId);
         $arTipoRefeicao = [];
-        foreach($dadosTipoRefeicao as $tipoRefeicao) {
-            $arTipoRefeicao[] = [["text" => $tipoRefeicao['tp_refeicao'], "callback_data" => 'tipo_refeicao_' . $tipoRefeicao['id']]];
+
+        if (is_array($dadosTipoRefeicao)) {
+            foreach ($dadosTipoRefeicao as $tipoRefeicao) {
+                $arTipoRefeicao[] = [["text" => $tipoRefeicao['tp_refeicao'], "callback_data" => 'tipo_refeicao_' . $tipoRefeicao['id']]];
+            }
         }
-        if(empty($arTipoRefeicao)) {
+
+        if (empty($arTipoRefeicao)) {
             limparRequisicao($chatId);
-            sendMessage($chatId, "Nenhum tipo de refeição encontrado SITE_URL ., /refeicaotipo e adicione os seus tipos.");
+            $msg = "⚠️ *Nenhum tipo de refeição cadastrado!*\n\n"
+                . "Você precisa cadastrar seus tipos de refeição (ex: Café da Manhã, Almoço, Jantar) no site para continuar.\n\n"
+                . "Acesse: " . SITE_URL . "/refeicaotipo";
+            sendMessage($chatId, $msg);
         } else {
+            inserirAlimentoSelecionado($chatId, 'inserir_refeicao_tipo', $idAlimento);
             sendOptions($chatId, "Escolha o tipo de refeição: ", $arTipoRefeicao);
         }
     } else if (strpos($callbackData, "tipo_refeicao_") === 0) {

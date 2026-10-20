@@ -1,8 +1,7 @@
 <?php
 
-
-require "vendor/autoload.php";
-require "configbot.php";
+require_once "vendor/autoload.php";
+require_once "configbot.php";
 use app\classes\Bind;
 use app\models\Connection;
 
